@@ -1,6 +1,9 @@
-# ec-cube4_installer ってなんですか
+# この ec-cube4_installer ってなに?
 
 「EC-CUBE4の公式パッケージをUbuntu環境に導入する時短ansible-playbook 〜PostgreSQL/Nginx/Let's EncryptのSSL証明書〜」の超短縮形です。
+
+EC-CUBE環境を、公式サイトで案内されている下記のDockerへのインストールではなくて、諸事情により直接の状態で構築したかったのです。そこでせっかくだからansible-playbookの形で構築手順を書いておこうと思いました。
+- [Docker Composeを使用してインストールする \- < for EC\-CUBE 4 Developers />](https://doc4.ec-cube.net/quickstart/docker_compose_install)
 
 ## 動作確認を行った環境
 
@@ -17,7 +20,7 @@
 
 ## 使い方
 
-次のansible-playbookをこの順序で1〜6まで適用していくと、PostgreSQL+Nginx+SSL証明書まで整ったUbuntuサーバ環境の上に、EC-CUBE環境ができあがります。それなりの時短が達成できるかと思います。ansibleのベストプラクティスに乗っ取った作りではない点はご了承ください。
+次のansible-playbookを1〜6まで適用していくと、PostgreSQL+Nginx+SSL証明書まで整ったUbuntuサーバ環境の上に、EC-CUBE環境ができあがります。それなりの時短が達成できるかと思います。ansibleのベストプラクティスに乗っ取った作りではない点はご了承ください。
 
 - [sudo_1_setup-server.ansible.yml](tasks/sudo_1_setup-server.ansible.yml) : サーバとなるUbuntu環境の初期設定を行います。
 - [sudo_2_setup-certbot.ansible.yml](tasks/sudo_2_setup-certbot.ansible.yml) : Certbotをセットアップして、Let's EncryptのSSL証明書を取得します (Google Cloud DNSの併用が前提の作り)。
