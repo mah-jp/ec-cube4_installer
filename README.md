@@ -34,9 +34,7 @@ EC-CUBE環境を、公式サイトで案内されているDockerへのインス�
 
 ### おまけ
 
-[ansible-player.sh](ansible-player.sh)というシェルスクリプトを同梱しています。
-
-このスクリプトには、(1) ansibleに適用するinventoryファイルを環境変数`HOSTS_SELECT`で切り替える機能と、(2) 実行するansible-playbookファイルの選択を数値入力で行える機能があります。
+[ansible-player.sh](ansible-player.sh)というシェルスクリプトを同梱しています。このスクリプトには、(1) ansibleに適用するinventoryファイルを環境変数`HOSTS_SELECT`で切り替える機能と、(2) 実行するansible-playbookファイルの選択を数値入力で行える機能があります。
 
 (1) たとえば次の実行例では、「HOSTS_SELECT=**SAMPLE**」と指定してあるので、ansibleのinventoryファイルとして同じ階層にある「hosts_**SAMPLE**.txt」が使用されます。
 ```
@@ -52,4 +50,4 @@ $ HOSTS_SELECT=SAMPLE ./ansible-player.sh
 #?
 ```
 
-(2) また、このスクリプトを介してのplaybook実行はdry-runとなるようにしており基本的に安全です。playbookをいよいよ本番実行する時は、スクリプトが最後に標準出力する文字列をコピペして、端末画面に貼り付ければ実行可能です。
+(2) また、このスクリプトを介してのplaybook実行はdry-runとなるように設定しており基本的に安全です。playbookをいよいよ本番実行する時は、スクリプトが最後に標準出力する文字列をコピペして、端末画面に貼り付ければ実行可能です。
