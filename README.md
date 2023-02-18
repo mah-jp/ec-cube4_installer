@@ -23,7 +23,7 @@
 - [sudo_2_setup-certbot.ansible.yml](tasks/sudo_2_setup-certbot.ansible.yml) : Certbotをセットアップして、Let's EncryptのSSL証明書を取得します (Google Cloud DNSの併用が前提の作り)。
 - [sudo_3_setup-nginx.ansible.yml](tasks/sudo_3_setup-nginx.ansible.yml) : Nginxとphp-fpmをセットアップします。
 - [sudo_4_setup-postgresql.ansible.yml](tasks/sudo_4_setup-postgresql.ansible.yml) : PostgreSQLをセットアップして、EC-CUBEに必要なDBとユーザの作成を行います。
-- [sudo_5_install-eccube.ansible.yml](tasks/sudo_5_install-eccube.ansible.yml) : EC-CUBEのアーカイブを公式サイトからダウンロードしてサーバ上に展開し、必要なPHPモジュールも併せて導入します。
+- [sudo_5_install-eccube.ansible.yml](tasks/sudo_5_install-eccube.ansible.yml) : EC-CUBEのアーカイブを公式サイトからダウンロードしてサーバ上に展開し、composerの力を借りて必要なPHPモジュールも導入します。
 - [sudo_6_switchenv-eccube.ansible.yml](tasks/sudo_6_switchenv-eccube.ansible.yml) : EC-CUBEの動作環境を切り替えます。ウェブインストーラーでの初期設定が完了した後に適用してください。
 
 なお逆に、次のansible-playbookはPostgreSQLにセットアップした環境を初期化します。環境を作り直すときに便利かと。
