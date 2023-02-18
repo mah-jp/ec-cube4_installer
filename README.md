@@ -1,6 +1,6 @@
 # ec-cube4_installer
 
-EC-CUBE4の公式パッケージをUbuntu環境に導入してSSL証明書も取得するansible-playbook 〜PostgreSQL+Nginx+Certbot〜
+EC-CUBE4の公式パッケージをUbuntu環境に導入する時短ansible-playbook 〜PostgreSQL/Nginx/Let's EncryptのSSL証明書〜
 
 ## 動作確認を行った環境
 
@@ -16,7 +16,7 @@ EC-CUBE4の公式パッケージをUbuntu環境に導入してSSL証明書も取
 
 ## 使い方
 
-次のansible-playbookをこの順序で1〜6まで適用していくと、EC-CUBE環境ができあがります。それなりの時短になるかと思います。
+次のansible-playbookをこの順序で1〜6まで適用していくと、PostgreSQL+Nginx+SSL証明書まで整ったUbuntuサーバ環境の上に、EC-CUBE環境ができあがります。それなりの時短が達成されるかと思います。
 
 - [sudo_1_setup-server.ansible.yml](tasks/sudo_1_setup-server.ansible.yml) : サーバとなるUbuntu環境の初期設定を行います。
 - [sudo_2_setup-certbot.ansible.yml](tasks/sudo_2_setup-certbot.ansible.yml) : Certbotをセットアップして、Let's EncryptからSSL証明書を取得します (現時点ではGoogle Cloud DNS限定)。
@@ -27,15 +27,15 @@ EC-CUBE4の公式パッケージをUbuntu環境に導入してSSL証明書も取
 
 なお、次のansible-playbookはPostgreSQLにセットアップした環境を初期化します。環境を作り直すときに便利かと。
 
-- [sudo_9_destroy-postgresql.ansible.yml](tasks/sudo_9_destroy-postgresql.ansible.yml)
+- [sudo_9_destroy-postgresql.ansible.yml](tasks/sudo_9_destroy-postgresql.ansible.yml) : PostgreSQLに作成したEC-CUBE4用のデータベースとユーザを削除します
 
 ### おまけ
 
 [ansible-player.sh](ansible-player.sh)というシェルスクリプトを同梱しています。
 
-このスクリプトには、ansibleに適用するinventoryファイルを環境変数`HOSTS_SELECT`で切り替える機能と、実行するansible-playbookファイルの選択を数値入力で行える機能があります。また、このスクリプトを介してのplaybook実行は必ずdry-runとなるようにしており基本的に安全です。playbookをいよいよ本番実行する時は、スクリプトがdry-run時に最後に出力する文字列をコピペして、端末に貼り付ければ可能です。
+このスクリプトには、ansibleに適用するinventoryファイルを環境変数`HOSTS_SELECT`で切り替える機能と、実行するansible-playbookファイルの選択を数値入力で行える機能があります。また、このスクリプトを介してのplaybook実行は必ずdry-runとなるようにしており基本的に安全です。playbookをいよいよ本番実行する時は、スクリプトが最後に出力する文字列をコピペして、端末画面に貼り付ければ可能です。
 
-たとえば次の実行例では、「HOSTS_SELECT=**SAMPLE**」と指定してあるので、inventoryファイルとして同じ階層にある「hosts_**SAMPLE**.txt」が使用されます。
+たとえば次の実行例では、「HOSTS_SELECT=**SAMPLE**」と指定してあるので、ansibleのinventoryファイルとして同じ階層にある「hosts_**SAMPLE**.txt」が使用されます。
 ```
 $ HOSTS_SELECT=SAMPLE ./ansible-player.sh
 1) sudo_1_setup-server.ansible.yml
