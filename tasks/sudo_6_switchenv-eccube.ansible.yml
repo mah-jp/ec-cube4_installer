@@ -1,0 +1,13 @@
+---
+- hosts: all
+
+  tasks:
+    - name: "Set APP_ENV/APP_DEBUG values in .env"
+      ansible.builtin.replace:
+        backup: true
+        path: "{{ custom_dir_eccube_install }}ec-cube/.env"
+        regexp: "{{ item.regexp }}"
+        replace: "{{ item.replace }}"
+      with_items:
+        - { 'regexp':'^APP_ENV=.+', 'replace':"APP_ENV={{ custom_app_env }}" }
+        - { 'regexp':'^APP_DEBUG=.+', 'replace':"APP_DEBUG={{ custom_app_debug }}" }

@@ -1,0 +1,29 @@
+# Pre:
+# $ ansible-galaxy collection install community.postgresql
+# Ref:
+# - community.postgresql.postgresql_db module – Add or remove PostgreSQL databases from a remote host — Ansible Documentation
+#   https://docs.ansible.com/ansible/latest/collections/community/postgresql/postgresql_db_module.html
+
+---
+- hosts: all
+  become: true
+
+  tasks:
+    - name: 'Start services'
+      ansible.builtin.service: name={{ item }} state=started
+      with_items:
+        - postgresql
+
+    - name: 'Delete app database'
+      community.postgresql.postgresql_db:
+        state: absent
+        name: "{{ custom_db_name }}"
+      become_user: postgres
+
+    - name: 'Delete db user'
+      community.postgresql.postgresql_user:
+        state: absent
+        name: "{{ custom_db_user }}"
+      become_user: postgres
+
+  handlers:

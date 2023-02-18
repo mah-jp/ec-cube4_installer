@@ -1,0 +1,55 @@
+# あなたのテスト環境
+[group_eccube_server]
+eccube-dev1
+
+[all:vars]
+ansible_remote_tmp=$HOME/.ansible/tmp
+
+### PostgreSQL 関係
+
+custom_db_name=eccube4
+custom_db_user=eccube4
+custom_db_password=XXXXXXXXXXXXXXXX
+
+### EC-CUBE4 インストール関係
+
+# サーバのドメイン名
+custom_domain=eccube-dev1.example.com
+
+# EC-CUBE4インストール先
+custom_dir_eccube_install=/home/hogehoge/public_html/tmp/
+
+# EC-CUBE4公式パッケージのURL
+custom_url_eccube_zip=https://downloads.ec-cube.net/src/eccube-4.2.0.zip
+
+# 導入するPHPのバージョン (EC-CUBEのシステム要件を参照して指定すること)
+custom_php_version=8.1
+
+### EC-CUBE4 動作環境関係
+
+# 開発環境 (たとえば管理画面でGraphiQL (GraphQLの画面) を使用するときは開発環境が必要)
+custom_app_env=dev
+custom_app_debug=1
+
+# プロダクション環境
+#custom_app_env=prod
+#custom_app_debug=0
+
+### Google Cloud DNS関係
+
+# Googleからダウンロードしたcredentials
+custom_file_credentials_src=files/sample_cloud-dns-XXXXXX-XXXXXXXXXXXX.json
+
+# credentialsのサーバ上の保存場所
+custom_file_credentials_dest=/root/.secrets/certbot/google.json
+
+### Let's Encrypt関係
+
+# 登録するメールアドレス
+custom_certbot_emailaddress=hogehoge@example.com
+
+# SSL証明書を取得するドメイン
+custom_certbot_domain=*.example.com
+
+# SSL証明書が保存されるディレクトリ名のサーバ名部分
+custom_domain_saveddir=example.com

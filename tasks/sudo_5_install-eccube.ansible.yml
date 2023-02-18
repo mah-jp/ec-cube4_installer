@@ -1,0 +1,79 @@
+# Ref:
+# - システム要件 - < for EC-CUBE 4 Developers /> https://doc4.ec-cube.net/quickstart/requirement
+# - サーバーへインストールする - < for EC-CUBE 4 Developers /> https://doc4.ec-cube.net/quickstart/web-installer
+
+---
+- hosts: all
+
+  pre_tasks:
+    - name: 'Install packages by apt'
+      become: true
+      when: ansible_facts['os_family'] == 'Debian'
+      ansible.builtin.apt:
+        state: present
+        name: "{{ packages }}"
+      vars:
+        packages:
+          - bzip2
+          - unzip
+          - php{{ custom_php_version }}-cli
+          - composer
+          - php-curl
+          - php-xml
+          - php-zip
+          - libxml2-dev
+          - php-pgsql
+          - php-apcu
+
+    - name: "Set memory_limit value in php.ini"
+      become: true
+      ansible.builtin.replace:
+        backup: true
+        path: "/etc/php/{{ custom_php_version }}/fpm/php.ini"
+        regexp: '^memory_limit = 128M'
+        replace: 'memory_limit = 512M'
+      notify: 'Restart php-fpm'
+
+  tasks:
+    - name: 'Exists directory'
+      ansible.builtin.file: path={{ item.path }} state=directory mode={{ item.mode }}
+      with_items:
+        - { 'path':"{{ custom_dir_eccube_install }}", 'mode':'0755' }
+
+    # - name: 'Cleanup old EC-CUBE files'
+    #   become: true
+    #   ansible.builtin.file:
+    #     path: "{{ custom_dir_eccube_install }}ec-cube/"
+    #     state: 'absent'
+
+    - name: 'Download and unzip EC-CUBE package'
+      ansible.builtin.unarchive:
+        src: "{{ custom_url_eccube_zip }}"
+        dest: "{{ custom_dir_eccube_install }}"
+        remote_src: true
+
+    # Ref: https://docs.ansible.com/ansible/latest/collections/community/general/composer_module.html
+    - name: 'Update/Install PHP modules for EC-CUBE'
+      community.general.composer:
+        command: update
+        working_dir: "{{ custom_dir_eccube_install }}ec-cube/"
+
+    - name: 'Change owner:group of EC-CUBE files'
+      become: true
+      ansible.builtin.file:
+        path: "{{ custom_dir_eccube_install }}ec-cube/"
+        owner: 'www-data'
+        group: 'www-data'
+        recurse: true
+
+    - name: 'Check web (https) access'
+      ansible.builtin.uri: url={{ item.url }}
+      with_items:
+        - { 'url':"https://{{ custom_domain }}/" }
+
+  handlers:
+    - name: 'Restart php-fpm'
+      become: true
+      ansible.builtin.service:
+        name: php{{ custom_php_version }}-fpm.service
+        state: restarted

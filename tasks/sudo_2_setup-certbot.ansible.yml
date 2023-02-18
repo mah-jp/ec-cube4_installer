@@ -1,0 +1,68 @@
+# Pre:
+# $ ansible-galaxy collection install community.general
+# Ref: 
+# - Certbot Instructions | Certbot https://certbot.eff.org/instructions?ws=nginx&os=ubuntufocal&tab=wildcard
+# - community.general.snap module – Manages snaps — Ansible Documentation https://docs.ansible.com/ansible/latest/collections/community/general/snap_module.html
+
+---
+- hosts: all
+  become: true
+
+  pre_tasks:
+    - name: 'Install snap core package'
+      when: ansible_facts['os_family'] == 'Debian'
+      community.general.snap:
+        state: present
+        name:
+          - core
+
+    - name: 'Remove old certbot packages by apt'
+      when: ansible_facts['os_family'] == 'Debian'
+      ansible.builtin.apt:
+        state: absent
+        name: certbot
+
+  tasks:
+    - name: 'Install snap packages (1)'
+      when: ansible_facts['os_family'] == 'Debian'
+      community.general.snap: name={{ item.name }} state=present classic={{ item.classic }}
+      with_items:
+        - { 'name':'certbot', 'classic':'true' }
+
+    - name: 'Symlink files'
+      ansible.builtin.file: src={{ item.src }} path={{ item.path }} state={{ item.state }}
+      with_items:
+        - { 'src':'/snap/bin/certbot', 'path':'/usr/bin/certbot', 'state':'link' }
+
+    - name: 'Shell: snap set certbot trust-plugin-with-root=ok'
+      ansible.builtin.shell:
+        cmd: 'snap set certbot trust-plugin-with-root=ok'
+
+    - name: 'Install snap packages (2)'
+      when: ansible_facts['os_family'] == 'Debian'
+      community.general.snap: name={{ item.name }} state=present classic={{ item.classic }}
+      with_items:
+        - { 'name':'certbot-dns-google', 'classic':'false' }
+
+    - name: 'Make directories'
+      ansible.builtin.file: path={{ item.path }} state={{ item.state }} mode={{ item.mode }}
+      with_items:
+        - { 'path':'/root/.secrets/certbot/', 'state':'directory', 'mode':'600' }
+
+    - name: 'Copy Google DNS credentials'
+      become: true
+      ansible.builtin.copy:
+        src: "{{ custom_file_credentials_src }}"
+        dest: "{{ custom_file_credentials_dest }}"
+        owner: root
+        group: root
+        mode: '0600'
+      notify:
+        - 'Do certbot (REAL)'
+
+  handlers:
+    - name: 'Do certbot (REAL)'
+      become: true
+      ansible.builtin.shell:
+        # cmd: "certbot certonly --dry-run -n --agree-tos --email {{ custom_certbot_emailaddress }} --dns-google --dns-google-credentials {{ custom_file_credentials_dest }} -d {{ custom_certbot_domain }}"
+        cmd: "certbot certonly -n --agree-tos --email {{ custom_certbot_emailaddress }} --dns-google --dns-google-credentials {{ custom_file_credentials_dest }} -d {{ custom_certbot_domain }}"
