@@ -30,15 +30,15 @@ EC-CUBE環境を、公式サイトで案内されているDockerへのインス�
 
 なお逆に、次のansible-playbookはPostgreSQLにセットアップした環境を初期化します。環境を作り直すときに便利かと。
 
-- [sudo_9_destroy-postgresql.ansible.yml](tasks/sudo_9_destroy-postgresql.ansible.yml) : PostgreSQLに作成したEC-CUBE4用のデータベースとユーザを削除します
+- [sudo_9_destroy-postgresql.ansible.yml](tasks/sudo_9_destroy-postgresql.ansible.yml) : PostgreSQLに作成したEC-CUBE4用のデータベースとユーザを削除します。
 
 ### おまけ
 
 [ansible-player.sh](ansible-player.sh)というシェルスクリプトを同梱しています。
 
-このスクリプトには、ansibleに適用するinventoryファイルを環境変数`HOSTS_SELECT`で切り替える機能と、実行するansible-playbookファイルの選択を数値入力で行える機能があります。また、このスクリプトを介してのplaybook実行はdry-runとなるようにしており基本的に安全です。playbookをいよいよ本番実行する時は、スクリプトが最後に標準出力する文字列をコピペして、端末画面に貼り付ければ可能です。
+このスクリプトには、(1) ansibleに適用するinventoryファイルを環境変数`HOSTS_SELECT`で切り替える機能と、(2) 実行するansible-playbookファイルの選択を数値入力で行える機能があります。
 
-たとえば次の実行例では、「HOSTS_SELECT=**SAMPLE**」と指定してあるので、ansibleのinventoryファイルとして同じ階層にある「hosts_**SAMPLE**.txt」が使用されます。
+(1) たとえば次の実行例では、「HOSTS_SELECT=**SAMPLE**」と指定してあるので、ansibleのinventoryファイルとして同じ階層にある「hosts_**SAMPLE**.txt」が使用されます。
 ```
 $ HOSTS_SELECT=SAMPLE ./ansible-player.sh
 1) sudo_1_setup-server.ansible.yml
@@ -51,3 +51,5 @@ $ HOSTS_SELECT=SAMPLE ./ansible-player.sh
 8) QUIT
 #?
 ```
+
+(2) また、このスクリプトを介してのplaybook実行はdry-runとなるようにしており基本的に安全です。playbookをいよいよ本番実行する時は、スクリプトが最後に標準出力する文字列をコピペして、端末画面に貼り付ければ実行可能です。
