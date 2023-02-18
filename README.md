@@ -1,6 +1,6 @@
 # この ec-cube4_installer ってなに?
 
-詳しく言えば、「EC-CUBE4の公式パッケージをUbuntu環境に導入する時短ansible-playbook 〜PostgreSQL/Nginx/Let's EncryptのSSL証明書〜」です。
+詳しく言えば、「EC-CUBE4の公式パッケージをUbuntu環境に導入する時短ansible-playbook 〜PostgreSQL/Nginx/Let's EncryptのSSL証明書とともに〜」です。
 
 EC-CUBE環境を、公式サイトで案内されているDockerへのインストール ([Docker Composeを使用してインストールする \- < for EC\-CUBE 4 Developers />](https://doc4.ec-cube.net/quickstart/docker_compose_install)) ではなくて、諸事情によりいわば直接の状態で構築したかったのです。そこでせっかくだからansible-playbookの形で構築手順を書いてみようと思いました。
 
