@@ -19,16 +19,35 @@ EC-CUBE環境を、公式サイトで案内されているDockerへのインス�
 
 ## 使い方
 
-次のansible-playbookを1〜6まで適用していくと、PostgreSQL+Nginx+SSL証明書まで整ったUbuntuサーバ環境の上に、EC-CUBE環境ができあがります。それなりの時短が達成できるかと思います。ansibleのベストプラクティスに乗っ取った作りではない点はご了承ください。
+### 1. リポジトリをcloneして環境に合わせた設定を用意
+
+```
+git clone https://github.com/mah-jp/ec-cube4_installer
+cd ec-cube4_installer
+cp -a hosts_SAMPLE.txt hosts_HOGE.txt
+vim hosts_HOGE.txt # 環境に合わせて内容を書き換えてください
+```
+
+### 2. ansible-playbookを順次適用
+
+次に、公開鍵認証でのSSHログインを可能にしたUbuntuサーバへ、下記のansible-playbookを1〜5まで適用していくと、PostgreSQL+Nginx+SSL証明書まで整ったEC-CUBE環境ができあがります。それなりの時短が達成できるかと思います。ansibleのベストプラクティスに乗っ取った作りではない点はご了承ください。
+
+```
+# 1番目のplaybook実行例
+ansible-playbook -i ./hosts_HOGE.txt --diff --check --ask-become-pass ./tasks/sudo_1_setup-server.ansible.yml # まずはdry-run
+ansible-playbook -i ./hosts_HOGE.txt --diff         --ask-become-pass ./tasks/sudo_1_setup-server.ansible.yml # 本番実行
+
+# 以降、2〜5番目まで実行を続けるとEC-CUBEのウェブインストーラーでの初期設定が行えるようになる
+```
 
 - [sudo_1_setup-server.ansible.yml](tasks/sudo_1_setup-server.ansible.yml) : サーバとなるUbuntu環境の初期設定を行います。
 - [sudo_2_setup-certbot.ansible.yml](tasks/sudo_2_setup-certbot.ansible.yml) : Certbotをセットアップして、Let's EncryptのSSL証明書を取得します (Google Cloud DNSの併用が前提の作り)。
 - [sudo_3_setup-nginx.ansible.yml](tasks/sudo_3_setup-nginx.ansible.yml) : Nginxとphp-fpmをセットアップします。
 - [sudo_4_setup-postgresql.ansible.yml](tasks/sudo_4_setup-postgresql.ansible.yml) : PostgreSQLをセットアップして、EC-CUBEに必要なDBとユーザの作成を行います。
 - [sudo_5_install-eccube.ansible.yml](tasks/sudo_5_install-eccube.ansible.yml) : EC-CUBEのアーカイブを公式サイトからダウンロードしてサーバ上に展開し、composerの力を借りて必要なPHPモジュールも導入します。
-- [sudo_6_switchenv-eccube.ansible.yml](tasks/sudo_6_switchenv-eccube.ansible.yml) : EC-CUBEの動作環境を切り替えます。ウェブインストーラーでの初期設定が完了した後に適用してください。
+- [sudo_6_switchenv-eccube.ansible.yml](tasks/sudo_6_switchenv-eccube.ansible.yml) : EC-CUBEの動作環境 (開発環境←→プロダクション環境) を切り替えます。ウェブインストーラーでの初期設定が完了した後に適用してください。
 
-なお逆に、次のansible-playbookはPostgreSQLにセットアップした環境を初期化します。環境を作り直すときに便利かと。
+他方、次のansible-playbookはPostgreSQLにセットアップした環境を初期化します。DB環境を作り直すときに使用します。
 
 - [sudo_9_destroy-postgresql.ansible.yml](tasks/sudo_9_destroy-postgresql.ansible.yml) : PostgreSQLに作成したEC-CUBE4用のデータベースとユーザを削除します。
 
@@ -50,4 +69,4 @@ $ HOSTS_SELECT=SAMPLE ./ansible-player.sh
 #?
 ```
 
-(2) また、このスクリプトを介してのplaybook実行はdry-runとなるように設定しており基本的に安全です。playbookをいよいよ本番実行する時は、スクリプトが最後に標準出力する文字列をコピペして、端末画面に貼り付ければ実行可能です。
+(2) また、このスクリプトを介してのplaybook実行は `--check (dry-run)` となるように設定しており基本的に安全です。playbookをいよいよ本番実行する時は、スクリプトが最後に標準出力する文字列をコピペして、端末画面に貼り付ければ実行可能です。
