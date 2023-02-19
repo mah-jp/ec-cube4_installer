@@ -36,6 +36,7 @@
 
   tasks:
     - name: 'Exists directory'
+      become: "{{ custom_dir_eccube_become }}"
       ansible.builtin.file: path={{ item.path }} state=directory mode={{ item.mode }}
       with_items:
         - { 'path':"{{ custom_dir_eccube_install }}", 'mode':'0755' }
@@ -47,6 +48,7 @@
     #     state: 'absent'
 
     - name: 'Download and unzip EC-CUBE package'
+      become: "{{ custom_dir_eccube_become }}"
       ansible.builtin.unarchive:
         src: "{{ custom_url_eccube_zip }}"
         dest: "{{ custom_dir_eccube_install }}"
@@ -54,6 +56,7 @@
 
     # Ref: https://docs.ansible.com/ansible/latest/collections/community/general/composer_module.html
     - name: 'Update/Install PHP modules for EC-CUBE'
+      become: "{{ custom_dir_eccube_become }}"
       community.general.composer:
         command: update
         working_dir: "{{ custom_dir_eccube_install }}ec-cube/"
@@ -66,10 +69,10 @@
         group: 'www-data'
         recurse: true
 
-    - name: 'Check web (https) access'
-      ansible.builtin.uri: url={{ item.url }}
-      with_items:
-        - { 'url':"https://{{ custom_domain }}/" }
+    # - name: 'Check web (https) access'
+    #   ansible.builtin.uri: url={{ item.url }}
+    #   with_items:
+    #     - { 'url':"https://{{ custom_domain }}/" }
 
   handlers:
     - name: 'Restart php-fpm'
