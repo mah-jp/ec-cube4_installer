@@ -38,6 +38,12 @@
       notify:
         - 'Reload nginx'
 
+    - name: 'Copy files for letsencrypt'
+      become: true
+      ansible.builtin.template: src={{ item.src }} dest={{ item.dest }} mode={{ item.mode }} owner={{ item.owner }} group={{ item.group }}
+      with_items:
+        - { 'src':'files/01-nginx.sh', 'dest':'/etc/letsencrypt/renewal-hooks/deploy/01-nginx.sh', 'mode':'0744', 'owner':'root', 'group':'root' }
+
   handlers:
     - name: 'Reload nginx'
       become: true
