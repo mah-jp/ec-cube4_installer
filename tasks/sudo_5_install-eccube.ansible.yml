@@ -25,7 +25,7 @@
           - php-pgsql
           - php-apcu
 
-    - name: "Set memory_limit value in php.ini"
+    - name: 'Set memory_limit value in php.ini'
       become: true
       ansible.builtin.replace:
         backup: true
