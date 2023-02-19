@@ -1,6 +1,8 @@
 # あなたのテスト環境
 [group_eccube_server]
-eccube-dev1
+
+# EC-CUBEを導入したいサーバを記述します (公開鍵認証でSSHログイン可能にしておいてください)
+192.168.1.XXX
 
 [all:vars]
 ansible_remote_tmp=$HOME/.ansible/tmp
@@ -13,11 +15,11 @@ custom_db_password=XXXXXXXXXXXXXXXX
 
 ### EC-CUBE4 インストール関係
 
-# サーバのドメイン名
+# サーバのNginxでのドメイン名
 custom_domain=eccube-dev1.example.com
 
-# EC-CUBE4インストール先
-custom_dir_eccube_install=/home/hogehoge/public_html/tmp/
+# EC-CUBE4インストール先 (ここに "ec-cube" というディレクトリが生成されます)
+custom_dir_eccube_install=/var/www/html/
 
 # EC-CUBE4公式パッケージのURL
 custom_url_eccube_zip=https://downloads.ec-cube.net/src/eccube-4.2.0.zip
@@ -27,11 +29,11 @@ custom_php_version=8.1
 
 ### EC-CUBE4 動作環境関係
 
-# 開発環境 (たとえば管理画面でGraphiQL (GraphQLの画面) を使用するときは開発環境が必要)
+# 開発環境ならこれらを有効化 (たとえば管理画面でGraphiQL (GraphQLの画面) を使用するときは開発環境が必要)
 custom_app_env=dev
 custom_app_debug=1
 
-# プロダクション環境
+# プロダクション環境ならこれらを有効化
 #custom_app_env=prod
 #custom_app_debug=0
 
@@ -51,5 +53,5 @@ custom_certbot_emailaddress=hogehoge@example.com
 # SSL証明書を取得するドメイン
 custom_certbot_domain=*.example.com
 
-# SSL証明書が保存されるディレクトリ名のサーバ名部分
+# SSL証明書が保存されるディレクトリ "/etc/letsencrypt/live/ドメイン名/..." のドメイン名部分
 custom_domain_saveddir=example.com
