@@ -43,7 +43,7 @@ vim hosts_HOGE.txt # 環境に合わせて内容を書き換えてください
 
 ```
 # 1番目のplaybook実行例
-ansible-playbook -i ./hosts_HOGE.txt --diff --check --ask-become-pass ./tasks/sudo_1_setup-server.ansible.yml # まずはdry-run
+ansible-playbook -i ./hosts_HOGE.txt --diff --check --ask-become-pass ./tasks/sudo_1_setup-server.ansible.yml # まずは --check
 ansible-playbook -i ./hosts_HOGE.txt --diff         --ask-become-pass ./tasks/sudo_1_setup-server.ansible.yml # 本番実行
 
 # 以降、2〜5番目まで実行を続けるとEC-CUBEのウェブインストーラーでの初期設定が行えるようになります
@@ -87,4 +87,4 @@ $ HOSTS_SELECT=SAMPLE ./ansible-player.sh
 #?
 ```
 
-(2) また、このスクリプトを介してのplaybook実行は `--check (dry-run)` となるように設定しており基本的に安全です。playbookをいよいよ本番実行する時は、スクリプトが最後に標準出力する文字列をコピペして、端末画面に貼り付ければ実行可能です。
+(2) このスクリプトを介してのplaybook実行は `--check (dry-run)` となるように設定しており基本的に安全です。playbookをいよいよ本番実行する時は、スクリプトが最後に標準出力する文字列をコピペして、端末画面に貼り付ければ実行可能です。
