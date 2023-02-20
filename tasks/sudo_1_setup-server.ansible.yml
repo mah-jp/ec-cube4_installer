@@ -23,6 +23,7 @@
         name: "{{ packages }}"
       vars:
         packages:
+          - acl
           # - dstat
           # - nmap
           - python3-pip
