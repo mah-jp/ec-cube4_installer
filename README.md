@@ -30,7 +30,16 @@ vim hosts_HOGE.txt # 環境に合わせて内容を書き換えてください
 
 ### 2. ansible-playbookを順次適用
 
-次に、公開鍵認証でのSSHログインを可能にしたUbuntuサーバへ、下記のansible-playbookを1〜5まで適用していくと、PostgreSQL+Nginx+SSL証明書まで整ったEC-CUBE環境ができあがります。それなりの時短が達成できるかと思います。ansibleのベストプラクティスに乗っ取った作りではない点はご了承ください。
+公開鍵認証でのSSHログインを可能にしたUbuntuサーバへ、下記のansible-playbookを1〜5まで適用していくと、PostgreSQL+Nginx+SSL証明書まで整ったEC-CUBE環境ができあがります。それなりの時短が達成できるかと思います。ansibleのベストプラクティスに乗っ取った作りではない点はご了承ください。
+
+- [sudo_1_setup-server.ansible.yml](tasks/sudo_1_setup-server.ansible.yml) : サーバとなるUbuntu環境の初期設定を行います。
+- [sudo_2_setup-certbot.ansible.yml](tasks/sudo_2_setup-certbot.ansible.yml) : Certbotをセットアップして、Let's EncryptのSSL証明書を取得します (Google Cloud DNSの併用が前提の作り)。
+- [sudo_3_setup-nginx.ansible.yml](tasks/sudo_3_setup-nginx.ansible.yml) : Nginxとphp-fpmをセットアップします。
+- [sudo_4_setup-postgresql.ansible.yml](tasks/sudo_4_setup-postgresql.ansible.yml) : PostgreSQLをセットアップして、EC-CUBEに必要なDBとユーザの作成を行います。
+- [sudo_5_install-eccube.ansible.yml](tasks/sudo_5_install-eccube.ansible.yml) : EC-CUBEのアーカイブを公式サイトからダウンロードしてサーバ上に展開し、composerの力を借りて必要なPHPモジュールも導入します。
+- [sudo_6_switchenv-eccube.ansible.yml](tasks/sudo_6_switchenv-eccube.ansible.yml) : EC-CUBEの動作環境 (開発環境←→プロダクション環境) を切り替えます。ウェブインストーラーでの初期設定が完了した後に適用してください。
+
+#### a. 1個ずつ確認しながら適用
 
 ```
 # 1番目のplaybook実行例
@@ -40,14 +49,23 @@ ansible-playbook -i ./hosts_HOGE.txt --diff         --ask-become-pass ./tasks/su
 # 以降、2〜5番目まで実行を続けるとEC-CUBEのウェブインストーラーでの初期設定が行えるようになる
 ```
 
-- [sudo_1_setup-server.ansible.yml](tasks/sudo_1_setup-server.ansible.yml) : サーバとなるUbuntu環境の初期設定を行います。
-- [sudo_2_setup-certbot.ansible.yml](tasks/sudo_2_setup-certbot.ansible.yml) : Certbotをセットアップして、Let's EncryptのSSL証明書を取得します (Google Cloud DNSの併用が前提の作り)。
-- [sudo_3_setup-nginx.ansible.yml](tasks/sudo_3_setup-nginx.ansible.yml) : Nginxとphp-fpmをセットアップします。
-- [sudo_4_setup-postgresql.ansible.yml](tasks/sudo_4_setup-postgresql.ansible.yml) : PostgreSQLをセットアップして、EC-CUBEに必要なDBとユーザの作成を行います。
-- [sudo_5_install-eccube.ansible.yml](tasks/sudo_5_install-eccube.ansible.yml) : EC-CUBEのアーカイブを公式サイトからダウンロードしてサーバ上に展開し、composerの力を借りて必要なPHPモジュールも導入します。
-- [sudo_6_switchenv-eccube.ansible.yml](tasks/sudo_6_switchenv-eccube.ansible.yml) : EC-CUBEの動作環境 (開発環境←→プロダクション環境) を切り替えます。ウェブインストーラーでの初期設定が完了した後に適用してください。
+#### b. まとめて適用
 
-他方、次のansible-playbookはPostgreSQLにセットアップした環境を初期化します。DB環境を作り直すときに使用します。
+```
+# まずは --check ありで動作を確認
+ansible-playbook -i ./hosts_HOGE.txt --diff --check --ask-become-pass \
+	./tasks/sudo_1_setup-server.ansible.yml \
+	./tasks/sudo_2_setup-certbot.ansible.yml \
+	./tasks/sudo_3_setup-nginx.ansible.yml \
+	./tasks/sudo_4_setup-postgresql.ansible.yml \
+	./tasks/sudo_5_install-eccube.ansible.yml
+
+# 問題なさそうなら --check を外して実行してください☕
+```
+
+### 3. 再初期化のときには
+
+次のansible-playbookはPostgreSQLにセットアップした環境を初期化します。DB環境を作り直すときに使用します。
 
 - [sudo_9_destroy-postgresql.ansible.yml](tasks/sudo_9_destroy-postgresql.ansible.yml) : PostgreSQLに作成したEC-CUBE4用のデータベースとユーザを削除します。
 
