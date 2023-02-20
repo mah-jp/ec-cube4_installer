@@ -22,7 +22,7 @@ EC-CUBE環境を、公式サイトで案内されているDockerへのインス�
 ### 1. リポジトリをcloneして環境に合わせた設定を用意
 
 ```
-git clone https://github.com/mah-jp/ec-cube4_installer
+git clone --depth=1 https://github.com/mah-jp/ec-cube4_installer
 cd ec-cube4_installer
 cp -a hosts_SAMPLE.txt hosts_HOGE.txt
 vim hosts_HOGE.txt # 環境に合わせて内容を書き換えてください
