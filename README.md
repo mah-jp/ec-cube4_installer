@@ -78,16 +78,16 @@ vim hosts_HOGE.txt # 環境に合わせて内容を書き換えてください
 [ansible-player.sh](ansible-player.sh)というシェルスクリプトを同梱しています。このスクリプトには、(1) ansibleに適用するinventoryファイルを環境変数`HOSTS_SELECT`で切り替える機能と、(2) 実行するansible-playbookファイルの選択を数値入力で行える機能があります。
 
 1. たとえば次の実行例では、「HOSTS_SELECT=**SAMPLE**」と指定してあるので、ansibleのinventoryファイルとして同じ階層にある「hosts_**SAMPLE**.txt」が使用されます
-```
-$ HOSTS_SELECT=SAMPLE ./ansible-player.sh
-1) sudo_1_setup-server.ansible.yml
-2) sudo_2_setup-certbot.ansible.yml
-3) sudo_3_setup-nginx.ansible.yml
-4) sudo_4_setup-postgresql.ansible.yml
-5) sudo_5_install-eccube.ansible.yml
-6) sudo_6_switchenv-eccube.ansible.yml
-7) sudo_9_destroy-postgresql.ansible.yml
-8) QUIT
-#?
-```
+	```
+	$ HOSTS_SELECT=SAMPLE ./ansible-player.sh
+	1) sudo_1_setup-server.ansible.yml
+	2) sudo_2_setup-certbot.ansible.yml
+	3) sudo_3_setup-nginx.ansible.yml
+	4) sudo_4_setup-postgresql.ansible.yml
+	5) sudo_5_install-eccube.ansible.yml
+	6) sudo_6_switchenv-eccube.ansible.yml
+	7) sudo_9_destroy-postgresql.ansible.yml
+	8) QUIT
+	#?
+	```
 2. このスクリプトを介してのplaybook実行は `--check (dry-run)` となるように設定しており基本的に安全です。playbookをいよいよ本番実行する時は、スクリプトが最後に標準出力するコマンド文字列をコピペして、端末画面に貼り付ければ実行可能です
