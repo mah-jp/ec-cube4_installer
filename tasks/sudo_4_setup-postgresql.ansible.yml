@@ -6,10 +6,10 @@
 
 ---
 - hosts: all
+  become: true
 
   pre_tasks:
     - name: 'Install packages by apt'
-      become: true
       when: ansible_facts['os_family'] == 'Debian'
       ansible.builtin.apt:
         state: present
@@ -25,13 +25,11 @@
 
   tasks:
     - name: 'Start and enable services'
-      become: true
       ansible.builtin.service: name={{ item }} state=started enabled=yes
       with_items:
         - postgresql
 
     - name: 'Create app database'
-      become: true
       community.postgresql.postgresql_db:
         state: present
         name: "{{ custom_db_name }}"
@@ -39,7 +37,6 @@
       become_user: postgres
 
     - name: 'Create db user'
-      become: true
       community.postgresql.postgresql_user:
         state: present
         name: "{{ custom_db_user }}"
@@ -47,7 +44,6 @@
       become_user: postgres
 
     - name: 'Grant db user access to app db'
-      become: true
       community.postgresql.postgresql_privs:
         type: database
         database: "{{ custom_db_name }}"
