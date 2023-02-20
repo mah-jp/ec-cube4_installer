@@ -41,27 +41,31 @@ vim hosts_HOGE.txt # 環境に合わせて内容を書き換えてください
 
 #### a. 1個ずつ確認しながら適用
 
-```
-# 1番目のplaybook実行例
-ansible-playbook -i ./hosts_HOGE.txt --diff --check --ask-become-pass ./tasks/sudo_1_setup-server.ansible.yml # まずは --check
-ansible-playbook -i ./hosts_HOGE.txt --diff         --ask-become-pass ./tasks/sudo_1_setup-server.ansible.yml # 本番実行
-
-# 以降、2〜5番目まで実行を続けるとEC-CUBEのウェブインストーラーでの初期設定が行えるようになります
-```
+1. 次のようにplaybookの1番目を適用します
+	```
+	# 1番目のplaybook実行例
+	ansible-playbook -i ./hosts_HOGE.txt --diff --check --ask-become-pass ./tasks/sudo_1_setup-server.ansible.yml # まずは --check
+	ansible-playbook -i ./hosts_HOGE.txt --diff         --ask-become-pass ./tasks/sudo_1_setup-server.ansible.yml # 次に本番実行
+	```
+2. 以降、2〜5番目まで実行を続けるとEC-CUBEウェブインストーラーでの初期設定が行える段階まで構築が完了します
 
 #### b. まとめて適用
 
-```
-# まずは --check ありで動作を確認
-ansible-playbook -i ./hosts_HOGE.txt --diff --check --ask-become-pass \
-	./tasks/sudo_1_setup-server.ansible.yml \
-	./tasks/sudo_2_setup-certbot.ansible.yml \
-	./tasks/sudo_3_setup-nginx.ansible.yml \
-	./tasks/sudo_4_setup-postgresql.ansible.yml \
-	./tasks/sudo_5_install-eccube.ansible.yml
-
-# 問題なさそうなら --check を外して実行してください☕
-```
+1. playbookをまとめて本番適用します
+	```
+	# --check を外してのいきなり本番実行☕
+	time ansible-playbook -i ./hosts_HOGE.txt --diff --ask-become-pass \
+		./tasks/sudo_1_setup-server.ansible.yml \
+		./tasks/sudo_2_setup-certbot.ansible.yml \
+		./tasks/sudo_3_setup-nginx.ansible.yml \
+		./tasks/sudo_4_setup-postgresql.ansible.yml \
+		./tasks/sudo_5_install-eccube.ansible.yml
+	(snip)
+	real	6m7.091s
+	user	0m28.867s
+	sys	0m4.950s
+	```
+2. EC-CUBEウェブインストーラーでの初期設定を行ってください
 
 ### 3. 再初期化のときには
 
@@ -73,7 +77,7 @@ ansible-playbook -i ./hosts_HOGE.txt --diff --check --ask-become-pass \
 
 [ansible-player.sh](ansible-player.sh)というシェルスクリプトを同梱しています。このスクリプトには、(1) ansibleに適用するinventoryファイルを環境変数`HOSTS_SELECT`で切り替える機能と、(2) 実行するansible-playbookファイルの選択を数値入力で行える機能があります。
 
-(1) たとえば次の実行例では、「HOSTS_SELECT=**SAMPLE**」と指定してあるので、ansibleのinventoryファイルとして同じ階層にある「hosts_**SAMPLE**.txt」が使用されます。
+1. たとえば次の実行例では、「HOSTS_SELECT=**SAMPLE**」と指定してあるので、ansibleのinventoryファイルとして同じ階層にある「hosts_**SAMPLE**.txt」が使用されます
 ```
 $ HOSTS_SELECT=SAMPLE ./ansible-player.sh
 1) sudo_1_setup-server.ansible.yml
@@ -86,5 +90,4 @@ $ HOSTS_SELECT=SAMPLE ./ansible-player.sh
 8) QUIT
 #?
 ```
-
-(2) このスクリプトを介してのplaybook実行は `--check (dry-run)` となるように設定しており基本的に安全です。playbookをいよいよ本番実行する時は、スクリプトが最後に標準出力する文字列をコピペして、端末画面に貼り付ければ実行可能です。
+2. このスクリプトを介してのplaybook実行は `--check (dry-run)` となるように設定しており基本的に安全です。playbookをいよいよ本番実行する時は、スクリプトが最後に標準出力するコマンド文字列をコピペして、端末画面に貼り付ければ実行可能です
