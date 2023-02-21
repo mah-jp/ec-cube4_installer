@@ -51,7 +51,7 @@ vim hosts_HOGE.txt # 環境に合わせて内容を書き換えてください
 
 #### b. まとめて適用
 
-1. playbookをまとめて本番適用します
+1. playbookをまとめて本番適用します (Certbot実行中の待ち時間も含め、テストした環境だと6分7秒で完了しました)
 	```
 	# --check を外してのいきなり本番実行☕
 	time ansible-playbook -i ./hosts_HOGE.txt --diff --ask-become-pass \
