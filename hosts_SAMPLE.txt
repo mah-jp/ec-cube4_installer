@@ -24,7 +24,7 @@ custom_dir_eccube_install=/var/www/html/
 custom_dir_eccube_become=True
 
 # EC-CUBE4公式パッケージのURL
-custom_url_eccube_zip=https://downloads.ec-cube.net/src/eccube-4.2.0.zip
+custom_url_eccube_zip=https://downloads.ec-cube.net/src/eccube-4.2.1.zip
 
 # 導入するPHPのバージョン (EC-CUBEのシステム要件を参照して指定すること)
 custom_php_version=8.1
